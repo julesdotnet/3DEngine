@@ -18,7 +18,6 @@ public class MainApplication extends Application {
         Renderer renderer = new Renderer(800, 600);
         Camera camera = new Camera(40, 800.0 / 600.0, 0.1, 1000);
 
-        // Populate initial shapes
         bodyMap.put("Sphere", GeometricalBody.DIAMOND_BODY);
         bodyMap.put("Cube", GeometricalBody.CUBE_BODY);
         bodyMap.put("Pyramid", GeometricalBody.PYRAMID_BODY);
@@ -30,7 +29,6 @@ public class MainApplication extends Application {
         VBox topPanel = new VBox(shapeSelector);
         topPanel.setSpacing(5);
 
-        // Left Sidebar for adding new shapes
         TextField nameField = new TextField();
         nameField.setPromptText("Name");
 
@@ -50,17 +48,15 @@ public class MainApplication extends Application {
         sidebar.setPrefWidth(200);
         sidebar.setStyle("-fx-padding: 10; -fx-background-color: #dddddd;");
 
-        // Container layout
         BorderPane root = new BorderPane();
         root.setTop(topPanel);
         root.setLeft(sidebar);
         root.setCenter(renderer);
 
-        Scene scene = new Scene(root, 1000, 600);  // extra width for sidebar
+        Scene scene = new Scene(root, 1000, 600);
 
         final GeometricalBody[] currentBody = {bodyMap.get("Sphere")};
 
-        // Handle ComboBox selection
         shapeSelector.setOnAction(e -> {
             String selected = shapeSelector.getValue();
             currentBody[0] = bodyMap.get(selected);
@@ -82,7 +78,7 @@ public class MainApplication extends Application {
                 verticesArea.clear();
                 edgesArea.clear();
             } catch (Exception ex) {
-                ex.printStackTrace(); // Ideally, show an alert instead
+                ex.printStackTrace();
             }
         });
 
@@ -121,7 +117,7 @@ public class MainApplication extends Application {
         launch();
     }
 
-    // Parse vertices string into double[][]
+    //make it usable
     private double[][] parsePoints(String input) {
         String[] lines = input.split(";");
         List<double[]> points = new ArrayList<>();
@@ -136,7 +132,7 @@ public class MainApplication extends Application {
         return points.toArray(new double[0][]);
     }
 
-    // Parse edges string into double[][]
+    //turn it into usable format
     private double[][] parseEdges(String input) {
         String[] lines = input.split(";");
         List<double[]> edges = new ArrayList<>();

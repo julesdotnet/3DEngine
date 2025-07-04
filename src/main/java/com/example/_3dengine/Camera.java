@@ -7,10 +7,10 @@ public class Camera {
     // Camera position
     private double posX = 0, posY = 0, posZ = 0;
 
-    // Camera rotation (Euler angles in radians)
-    private double pitch = 0; // rotation around X axis (up/down)
-    private double yaw = 0;   // rotation around Y axis (left/right)
-    private double roll = 0;  // rotation around Z axis (tilt)
+    // Camera rotation
+    private double pitch = 0;
+    private double yaw = 0;
+    private double roll = 0;
 
     public Camera(double fov, double aspectRatio, double near, double far) {
         this.fov = Math.toRadians(fov);
@@ -120,7 +120,7 @@ public class Camera {
         return result;
     }
 
-    // Movement methods (relative to camera orientation)
+    // Movement
     public void moveForward(double distance) {
         posX -= Math.sin(yaw) * Math.cos(pitch) * distance;
         posY -= Math.sin(pitch) * distance; // <- fix: pitch nach oben = y runter
