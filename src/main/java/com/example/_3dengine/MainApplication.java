@@ -38,11 +38,14 @@ public class MainApplication extends Application {
         TextArea edgesArea = new TextArea();
         edgesArea.setPromptText("Edges, formatted as 0,1; 1,2");
 
+        CheckBox autoConnectBox = new CheckBox("Connect All Vertices");
+
         Button addShapeButton = new Button("Add Shape");
 
         VBox sidebar = new VBox(10, new Label("New Shape"),
                 new Label("Name:"), nameField,
                 new Label("Vertices:"), verticesArea,
+                autoConnectBox,
                 new Label("Edges:"), edgesArea,
                 addShapeButton);
         sidebar.setPrefWidth(200);
@@ -62,27 +65,34 @@ public class MainApplication extends Application {
             currentBody[0] = bodyMap.get(selected);
         });
 
-        // Handle adding new shape
+        // Add shape logic
         addShapeButton.setOnAction(e -> {
             try {
                 String name = nameField.getText().trim();
                 if (name.isEmpty()) return;
 
                 double[][] vertices = parsePoints(verticesArea.getText());
-                double[][] edges = parseEdges(edgesArea.getText());
+                double[][] edges;
+
+                if (autoConnectBox.isSelected()) {
+                    edges = generateAllEdges(vertices.length);
+                } else {
+                    edges = parseEdges(edgesArea.getText());
+                }
 
                 GeometricalBody newBody = new GeometricalBody(vertices, edges);
                 bodyMap.put(name, newBody);
                 shapeSelector.getItems().add(name);
+
                 nameField.clear();
                 verticesArea.clear();
                 edgesArea.clear();
+                autoConnectBox.setSelected(false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
 
-        // Handle keyboard input
         scene.setOnKeyPressed(e -> pressedKeys.add(e.getCode()));
         scene.setOnKeyReleased(e -> pressedKeys.remove(e.getCode()));
 
@@ -117,7 +127,6 @@ public class MainApplication extends Application {
         launch();
     }
 
-    //make it usable
     private double[][] parsePoints(String input) {
         String[] lines = input.split(";");
         List<double[]> points = new ArrayList<>();
@@ -132,7 +141,6 @@ public class MainApplication extends Application {
         return points.toArray(new double[0][]);
     }
 
-    //turn it into usable format
     private double[][] parseEdges(String input) {
         String[] lines = input.split(";");
         List<double[]> edges = new ArrayList<>();
@@ -142,6 +150,16 @@ public class MainApplication extends Application {
             int from = Integer.parseInt(parts[0].trim());
             int to = Integer.parseInt(parts[1].trim());
             edges.add(new double[]{from, to});
+        }
+        return edges.toArray(new double[0][]);
+    }
+
+    private double[][] generateAllEdges(int numVertices) {
+        List<double[]> edges = new ArrayList<>();
+        for (int i = 0; i < numVertices; i++) {
+            for (int j = i + 1; j < numVertices; j++) {
+                edges.add(new double[]{i, j});
+            }
         }
         return edges.toArray(new double[0][]);
     }
